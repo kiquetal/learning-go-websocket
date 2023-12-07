@@ -103,6 +103,12 @@ func ListenToWSchannel() {
 			log.Println(len(clients))
 			response.Action = "user_list"
 			response.ConnectedUsers = getUserList()
+		case "user_disconnect":
+			response.Action = "user_list"
+			delete(clients, e.Conn)
+			users := getUserList()
+			response.ConnectedUsers = users
+
 		default:
 			log.Println("Action not found")
 
