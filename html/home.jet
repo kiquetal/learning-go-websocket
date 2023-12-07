@@ -50,6 +50,16 @@
 
 <script>
 let socket = null;
+
+window.addEventListener('beforeunload', function() {
+    let action= "user_disconnect";
+    let data = {
+        Action: action,
+        Username: document.getElementById('username').value
+    };
+    socket.send(JSON.stringify(data));
+    socket.close();
+});
 document.addEventListener('DOMContentLoaded', function() {
     socket = new WebSocket('ws://127.0.0.1:8080/ws');
     socket.onopen = function(e) {
@@ -67,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Client >> request user list!");
             let action= "user_list";
             let data = {
-                Action: action
+                action: action
             };
             socket.send(JSON.stringify(data));
         }
@@ -78,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let username = document.getElementById('username').value;
             let message = document.getElementById('message').value;
             let data = {
-                Username: username,
-                Message: message,
-                Action:'message'
+                username: username,
+                message: message,
+                action:'message'
             };
             socket.send(JSON.stringify(data));
             document.getElementById('message').value = '';
