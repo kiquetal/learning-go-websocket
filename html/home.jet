@@ -34,7 +34,7 @@
  <label for="message">Message:</label>
  <input type="text" name="message" id="message" class="form-control" autocomplete="off">
  </div>
- <input type="hidden" name="action" id="action">
+ <input type="button" name="action" id="action" value="Send" class="btn btn-info">
 <hr>
 <div id="output" class="chatbox">
 </div>
