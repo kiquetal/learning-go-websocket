@@ -41,7 +41,8 @@
 </div>
 <div class="col-md-4">
 <h3>Users</h3>
-
+ <ol id="users">
+    </ol>
 </div>
 </div>
 
@@ -60,10 +61,55 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.onerror = function(e) {
         console.log("Client >> Connection error!");
     };
+
+    document.getElementById('username').addEventListener('keyup', function(e) {
+        if (e.keyCode === 13) {
+            console.log("Client >> request user list!");
+            let action= "user_list";
+            let data = {
+                Action: action
+            };
+            socket.send(JSON.stringify(data));
+        }
+    });
+
+    document.getElementById('message').addEventListener('keyup', function(e) {
+        if (e.keyCode === 13) {
+            let username = document.getElementById('username').value;
+            let message = document.getElementById('message').value;
+            let data = {
+                Username: username,
+                Message: message,
+                Action:'message'
+            };
+            socket.send(JSON.stringify(data));
+            document.getElementById('message').value = '';
+        }
+    });
     socket.onmessage = function(e) {
-        console.log("Client >> Message received: " + e.data);
+
         let obg= JSON.parse(e.data);
-        document.getElementById('output').innerHTML += '<p>' + obg["message"] + '</p>';
+        switch (obg["action"]) {
+            case 'message':
+                document.getElementById('output').innerHTML += '<p>' + obg["message"] + '</p>';
+                break;
+            case 'user_list':
+                console.log("receiving")
+                console.log(JSON.stringify(obg));
+                console.log(obg["connected_users"]);
+                let ul = document.getElementById('users')
+                while(ul.firstChild) {
+                    ul.removeChild(ul.firstChild);
+                }
+
+                obg["connected_users"].forEach(function(user) {
+                    let li = document.createElement('li');
+                    li.appendChild(document.createTextNode(user));
+                    ul.appendChild(li);
+                });
+                break;
+        }
+
 
     };
 

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/CloudyKit/jet/v6"
 	"github.com/gorilla/websocket"
 	"log"
@@ -27,22 +26,24 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 type WSJonResponse struct {
-	Message     string `json:"message"`
-	Action      string `json:"action"`
-	MessageType string `json:"message_type"`
+	Message        string   `json:"message"`
+	Action         string   `json:"action"`
+	MessageType    string   `json:"message_type"`
+	ConnectedUsers []string `json:"connected_users"`
 }
 type WebSocketConnection struct {
 	*websocket.Conn
 }
 
 type WsPayload struct {
-	Action  string              `json:"action"`
-	Message string              `json:"message"`
-	Conn    WebSocketConnection `json:"-"`
+	Action   string              `json:"action"`
+	Message  string              `json:"message"`
+	Username string              `json:"username"`
+	Conn     WebSocketConnection `json:"-"`
 }
 
 var wsChan = make(chan WsPayload)
-var clients = make(map[WebSocketConnection]bool)
+var clients = make(map[WebSocketConnection]string)
 
 func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	con, err := upgradeConnection.Upgrade(w, r, nil)
@@ -51,10 +52,10 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Server >> Client Successfully Connected...")
 	var response WSJonResponse
+	response.Action = "message"
 	response.Message = `<em><small>Connected to <b>server</b>!!</small></em>`
 	err = con.WriteJSON(response)
 	conn := WebSocketConnection{con}
-	clients[conn] = true
 
 	if err != nil {
 		panic(err)
@@ -84,17 +85,42 @@ func ListerForWS(conn *WebSocketConnection) {
 }
 
 func ListenToWSchannel() {
+	log.Println("Server >> Starting to listen to ws channel")
 	var response WSJonResponse
 	for {
 		e := <-wsChan
-		response.Action = "gOT HERE"
-		response.Message = fmt.Sprintf("Message: %s", e.Message)
+
+		switch e.Action {
+
+		case "message":
+			log.Println("Server >> New message: ", e.Message)
+			clients[e.Conn] = e.Username
+			response.Action = "message"
+			response.Message = "Server say hello,to " + e.Username
+			log.Println(len(clients))
+		case "user_list":
+			log.Println("Server >> Sending user list")
+
+			response.Action = "user_list"
+			response.ConnectedUsers = getUserList()
+		default:
+			log.Println("Action not found")
+
+		}
 
 		broadcastToAll(response)
 	}
 }
+func getUserList() []string {
+	var list []string
+	for _, v := range clients {
+		list = append(list, v)
+	}
+	return list
+}
 
 func broadcastToAll(response WSJonResponse) {
+	log.Println("Server >> Broadcasting message to all clients")
 	for client := range clients {
 		err := client.WriteJSON(response)
 		if err != nil {
