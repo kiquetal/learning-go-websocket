@@ -37,7 +37,8 @@
  <label for="message">Message:</label>
  <input type="text" name="message" id="message" class="form-control" autocomplete="off">
  </div>
- <input type="button" name="action" id="action" value="Send Message" class="btn btn-info">
+    <hr/>
+ <input type="button" name="action" id="action"  value="Send Message" class="btn btn-info mt-1">
 <hr>
 <div id="output" class="chatbox">
 </div>
@@ -82,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     socket.onerror = function(e) {
         console.log("Client >> Connection error!");
+        notie.alert({ type: 3, text: 'Connection error!', time: 2 })
     };
 
     usernameField.addEventListener('keyup', function(e) {
