@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/CloudyKit/jet/v6"
 	"github.com/gorilla/websocket"
 	"log"
@@ -96,7 +97,7 @@ func ListenToWSchannel() {
 			log.Println("Server >> New message: ", e.Message)
 			clients[e.Conn] = e.Username
 			response.Action = "message"
-			response.Message = "Server say hello,to " + e.Username
+			response.Message = fmt.Sprintf("<strong>%s</strong>: %s", e.Username, e.Message)
 			log.Println(len(clients))
 		case "user_list":
 			log.Println("Server >> Sending user list")
