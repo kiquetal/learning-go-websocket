@@ -1,0 +1,25 @@
+{
+  "Host": ":4001",
+  "Profiling": false,
+  "SSL": {
+    "Enabled": false,
+    "Host": ":4343",
+    "Key_file": "key.pem",
+    "cert_file": "cert.pem"
+  },
+  "apps": [
+    {
+      "name": "App",
+      "enabled": true,
+      "only_ssl": false,
+      "key": "abc123",
+      "secret": "123abc",
+      "app_id": "1",
+      "user_events": true,
+      "webhooks": {
+        "enabled": false,
+        "url": "http://127.0.0.1:5000/hook"
+      }
+    }
+  ]
+}

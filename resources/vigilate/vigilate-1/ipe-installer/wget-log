@@ -1,0 +1,6 @@
+--2024-01-03 23:36:04--  https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_darwin_amd64.tar.gz.tar.gz
+Resolving github.com (github.com)... 20.201.28.151
+Connecting to github.com (github.com)|20.201.28.151|:443... connected.
+HTTP request sent, awaiting response... 404 Not Found
+2024-01-03 23:36:04 ERROR 404: Not Found.
+

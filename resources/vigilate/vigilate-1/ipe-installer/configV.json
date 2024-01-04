@@ -1,0 +1,21 @@
+{
+	"Host": ":4001",
+	"Profiling":false,
+	"SSL": false,
+	"SSLHost": ":4433",
+	"SSLKeyFile": "A key.pem file",
+	"SSLCertFile": "A cert.pem file",
+	"Apps": [
+		{
+			"ApplicationDisabled": false,
+			"Secret": "123abc",
+			"Key": "abc123",
+			"OnlySSL": false,
+			"Name": "Appe",
+			"AppID": "1",
+			"UserEvents": true,
+			"WebHooks": false,
+			"URLWebHook": "Some URL to send webhooks"
+		}
+	]
+}
